@@ -1,0 +1,153 @@
+{% extends "suit/suit.html" %}
+
+{% block content %}
+
+<nav class="breadcrumb">首页 <span class="c-gray en">&gt;</span>主机资讯列表 </nav>
+<div>
+ <!-- 
+	<form action='/web/index/' method='GET'>
+		<span class="select-box inline">
+		<select name="searchos" class="select">
+			<option value="" >os分类</option>
+			<option value="centos" {% ifequal Qset.searchos "centos" %}selected = "selected"{% endifequal %} >centos</option>
+			<option value="Ubuntu" {% ifequal Qset.searchos "Ubuntu" %}selected = "selected"{% endifequal %} >Ubuntu</option>
+		</select>
+		</span>
+		<span class="select-box inline">
+		<select name="searchpublish" class="select">
+			<option value="">是否发布</option>
+			<option value="1" {% ifequal Qset.searchpublish "1" %}selected = "selected"{% endifequal %} >已发布</option>
+			<option value="0" {% ifequal Qset.searchpublish "0" %}selected = "selected"{% endifequal %} >已下架</option>
+		</select>
+		</span>
+		<input type="hidden" name="issearch" value=1>
+		<label>主机名:</label>
+		<input type="text" name="searchhostname" id="" placeholder="根据主机名" style="width:250px" class="input-text" value="{{ Qset.searchhostname }}">
+		<label>序列号:</label>
+		<input type="text" name="searchsn" id="" placeholder="根据序列号" style="width:250px" class="input-text" value="{{ Qset.searchsn }}" >
+		<label>ip地址:</label>
+		<input type="text" name="searchip" id="" placeholder="根据ip地址" style="width:250px" class="input-text" value="{{ Qset.searchip }}" >
+		<div>
+		<label>根据创建时间搜索--开始:</label>
+		<input type="text" name="searchstarttime" id="" placeholder="开始时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.tmpstarttime }}">
+		<label>根据创建时间搜索--结束:</label>
+		<input type="text" name="searchendtime" id="" placeholder="结束时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.tmpendtime }}">
+		<button class="btn btn-success" type="submit">搜索</button>
+		</div>
+	</form>
+ -->
+	<form action='/web/batchdel/' method='POST'>{% csrf_token %}
+	<div><span><button type="button" class="btn btn-danger radius" data-toggle="modal" data-target="#myBatchDel">批量删除</button></span> <span>共有数据：<strong>{{ AllCount }}</strong> 条</span> </div>
+	<!-- 批量删除的模态框（Modal） -->
+	<div class="modal fade" id="myBatchDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+	            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+	                  &times;
+	            </button>
+	            <h4 class="modal-title" id="myModalLabel">
+				 提示
+	            </h4>
+	         	</div>
+	         	<div class="modal-body">
+			 	确定要批量删除主机了？
+	         	</div>
+	         <div class="modal-footer">
+	            <button type="button" class="btn btn-default" data-dismiss="modal">
+				关闭
+	            </button>
+				<input type='submit' value='确认' class="btn btn-primary" role="button"/>
+	         </div>
+	      </div><!-- /.modal-content -->
+		</div><!-- /.modal -->
+	</div>
+	<div>
+		<table class="table table-border table-bordered table-bg table-hover table-sort">
+			<thead>
+				<tr>
+					<th width="25"></th>
+					<th width="20">ID</th>
+					<th width="80">文档名称</th>
+					<th width="75">附件</th>
+					<th width="120">创建时间</th>
+					<th width="60">索引状态</th>
+					<th width="120">操作</th>
+				</tr>
+			</thead>
+			{% for i in allServerObj %}
+			<tbody>
+				<tr class="text-c">
+					<td><input type="checkbox" value="{{ i.id }}" name="checkboxdel[]"></td>
+					<td>{{ i.id }}</td>
+					<td>{{ i.docname }}</td>
+					<td>{{ i.attachment }}</td>
+					<td>{{ i.timestamp|date:"Y-m-d H:i" }}</td>
+					{% ifequal i.indexstate "s" %}
+					<td class="td-status"><span class="label label-success">内容未索引</span></td>
+					{% else %}
+					<td class="td-status"><span class="label label-warning">已下架</span></td>
+					{% endifequal %}
+                    <td>
+                   	<div>
+                   	<p>
+                   	<a href="/web/details/{{ i.id }}" class="btn btn-info btn-xs" role="button" target="_blank">详情</a>
+                   	<a href="/web/terminal/{{ i.id }}" class="btn btn-success btn-xs" role="button" target="_blank">连接</a>
+                   	<button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal{{ i.id }}">删除</button>
+                   	</p>
+								<!-- 模态框（Modal） -->
+								<div class="modal fade" id="myModal{{ i.id }}" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+								            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+								                  &times;
+								            </button>
+								            <h4 class="modal-title" id="myModalLabel">
+											 提示
+								            </h4>
+								         	</div>
+								         	<div class="modal-body">
+										 	主机号{{ i.id　}} 主机名 {{ i.hostname }} 要删除了？
+								         	</div>
+								         <div class="modal-footer">
+								            <button type="button" class="btn btn-default" data-dismiss="modal">
+											关闭
+								            </button>
+								            <a href="/web/del/{{ i.id　}}"  class="btn btn-primary" role="button">
+											确认
+								            </a>
+								         </div>
+								      </div><!-- /.modal-content -->
+									</div><!-- /.modal -->
+								</div>
+					</div>
+                   </td>
+				</tr>
+			</tbody>
+			{% endfor %}
+		</table>
+	</div>
+	</form>
+</div>
+
+<div class="pagediv"></ul class="pure-paginator">{{ PageInfo }}</ul></div>
+
+{% if popover %}
+<div id="myPopover" class="alert alert-warning">
+	<a href="#" class="close" data-dismiss="alert">&times;</a>
+	{% if popover.id %}
+	<strong>成功！</strong>删除了主机{{ popover.id }}
+	{% else %}
+	<strong>抱歉！</strong>{{ popover.info }}
+	{% endif %}
+</div>
+<script type="text/javascript">
+$(document).ready(function(){ 
+	setTimeout(function(){alert("{{ popover.info }}{{ popover.id }}");},10);  
+}); 
+</script>  
+{% endif %}
+
+
+{% endblock %}

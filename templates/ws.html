@@ -1,0 +1,59 @@
+{% extends "suit/suit.html" %}
+{% block title %}远程连接主机{% endblock %}
+
+{% block content %}
+<nav class="breadcrumb">首页 <span class="c-gray en">&gt;</span>webshell</nav>
+<link rel="stylesheet" type="text/css" href="/static/xterm/xterm.css" />
+<div>
+<div>
+  	<button type="button" class="btn btn-success" onclick="connect()">Connect {{ HostInfoObj.hostname }}</button>
+</div>
+<div id="term" align="center"></div>
+<!-- <script src="http://cdn.bootcss.com/jquery/2.1.2/jquery.min.js"></script>
+<script src="http://apps.bdimg.com/libs/term.js/0.0.2/term.js"></script> -->
+<script src="/static/xterm/xterm.js"></script>
+<script src="/static/xterm/ws.js"></script>
+<script type="application/javascript">
+function connect() {
+    var options = {
+        host: "{{ HostInfoObj.addressssh }}",
+        port: "{{ HostInfoObj.portssh }}",
+        username: "{{ HostInfoObj.usernamessh }}",
+        password: "{{ HostInfoObj.passwordssh }}"
+    }
+    console.log(options)
+    openTerminal(options)
+}
+
+function openTerminal(options) {
+    var client = new WSSHClient();
+    var term = new Terminal({cols: 80, rows: 24, screenKeys: true, useStyle:true});
+    term.on('data', function (data) {
+        client.sendClientData(data);
+    });
+    term.open();
+    $('.terminal').detach().appendTo('#term');
+    term.write('Connecting...');
+    client.connect({
+        onError: function (error) {
+            term.write('Error: ' + error + '\r\n');
+            console.debug('error happened');
+        },
+        onConnect: function () {
+            client.sendInitData(options);
+            client.sendClientData('\r');
+            console.debug('connection established');
+        },
+        onClose: function () {
+            term.write("\rconnection closed")
+            console.debug('connection reset by peer');
+        },
+        onData: function (data) {
+            term.write(data);
+            console.debug('get data:' + data);
+        }
+    })
+}
+</script>
+</div>
+{% endblock %}
