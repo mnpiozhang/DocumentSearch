@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from views import login,logout,index,submit_doc,big_file_download,batchdeldoc,deldoc
+from views import login,logout,index,submit_doc,big_file_download,batch_del_doc,del_doc,edit
 
 urlpatterns = [
                url(r'^login/', login),
@@ -23,6 +23,7 @@ urlpatterns = [
                url(r'^index/(\d*)', index),
                url(r'^submit/', submit_doc),
                url(r'^download/(?P<attachmentid>\d+)/$',big_file_download),
-               url(r'^batchdel/',batchdeldoc),
-               url(r'^del/(?P<id>\w+)/$',deldoc),
+               url(r'^batchdel/',batch_del_doc),
+               url(r'^del/(?P<id>\w+)/$',del_doc),
+               url(r'^edit/(?P<id>\d+)/$',edit),
 ]

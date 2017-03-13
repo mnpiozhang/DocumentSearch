@@ -185,7 +185,7 @@ def big_file_download(request,attachmentid):
 
 #批量删除主机信息
 @is_login_auth
-def batchdeldoc(request):
+def batch_del_doc(request):
     if request.method == 'POST':
         #根据传进来的主机id批量删除数据库对象
         ret = {'DocumentInfoObj':None,'UserInfoObj':None,'PageInfo':None,'AllCount':None}
@@ -212,7 +212,7 @@ def batchdeldoc(request):
     
 #删除文档信息
 @is_login_auth
-def deldoc(request,id):
+def del_doc(request,id):
     DocumentInfoObj = DocumentInfo.objects.get(id=id)
     DocumentInfoObj.delete()
     ret = {'DocumentInfoObj':None,'UserInfoObj':None,'PageInfo':None,'AllCount':None}
@@ -225,3 +225,31 @@ def deldoc(request,id):
     ret['UserInfoObj'] = UserInfoObj
     ret['popover'] = { "id":id,"info":"已经删除文档" }
     return render_to_response('index.html',ret,context_instance=RequestContext(request))
+
+#编辑文档信息
+@is_login_auth
+def edit(request,id):
+    ret = {'UserName':None,'form':None,'status':'','id':None,'UserInfoObj':None}
+    DocumentInfoObj = DocumentInfo.objects.get(id=id)
+    
+    if request.method == 'POST':
+        DocumentInfoObj_form = DocumentForm(data=request.POST,files=request.FILES,instance=DocumentInfoObj)
+        if DocumentInfoObj_form.is_valid():
+            DocumentInfoObj_form.save()
+            ret['status'] = '修改成功'
+        else:
+            ret['status'] = '修改失败'
+            ret['form'] = DocumentInfoObj_form
+            #添加跨站请求伪造的认证
+            ret.update(csrf(request))
+            return render(request,'edit.html',ret)
+            
+    DocumentInfoObj_form = DocumentForm(instance=DocumentInfoObj)
+    ret['UserName'] = request.session.get('username',None)
+    UserInfoObj = UserInfo.objects.get(username=ret['UserName'])
+    ret['UserInfoObj'] = UserInfoObj
+    ret['form'] = DocumentInfoObj_form
+    ret['id'] = id
+    #添加跨站请求伪造的认证
+    ret.update(csrf(request))
+    return render_to_response('edit.html',ret)
