@@ -13,6 +13,7 @@ from utils.common  import  Page,page_div,query_page_div,get_doc_page_info
 from DocumentSearch import settings
 import datetime
 from django.db.models import Q
+from tasks import analyze_uploadfile_task
 # Create your views here.
 
 #登陆
@@ -124,7 +125,8 @@ def submit_doc(request):
             #索引状态放置为s即开始所以
             DocumentObj.indexstate = 's'
             DocumentObj.save()
-
+            analyze_uploadfile_task.delay(DocumentObj.id)
+            
             ret['status'] = 'save ok'
             
         else:

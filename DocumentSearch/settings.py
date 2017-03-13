@@ -10,6 +10,14 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
+#celery setting
+CELERY_BROKER_URL = 'redis://192.168.188.129:9379' 
+CELERY_RESULT_BACKEND = 'redis://192.168.188.129:9379' 
+CELERY_ACCEPT_CONTENT = ['application/json'] 
+CELERY_TASK_SERIALIZER = 'json' 
+CELERY_RESULT_SERIALIZER = 'json'
+
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 
