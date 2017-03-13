@@ -1,5 +1,5 @@
 {% extends "suit/suit.html" %}
-
+{% load attachment_format %}
 {% block content %}
 
 <nav class="breadcrumb">首页 <span class="c-gray en">&gt;</span>主机资讯列表 </nav>
@@ -70,19 +70,21 @@
 					<th width="20">ID</th>
 					<th width="80">文档名称</th>
 					<th width="75">附件</th>
-					<th width="120">创建时间</th>
+					<th width="30">创建时间</th>
+					<th width="30">修改时间</th>
 					<th width="60">索引状态</th>
 					<th width="120">操作</th>
 				</tr>
 			</thead>
-			{% for i in allServerObj %}
+			{% for i in DocumentInfoObj %}
 			<tbody>
 				<tr class="text-c">
 					<td><input type="checkbox" value="{{ i.id }}" name="checkboxdel[]"></td>
 					<td>{{ i.id }}</td>
 					<td>{{ i.docname }}</td>
-					<td>{{ i.attachment }}</td>
+					<td><a href="/backend/download/{{ i.id　}}">{{ i.attachment|attachment_format }}</a></td>
 					<td>{{ i.timestamp|date:"Y-m-d H:i" }}</td>
+					<td>{{ i.modifiedtime|date:"Y-m-d H:i" }}</td>
 					{% ifequal i.indexstate "s" %}
 					<td class="td-status"><span class="label label-success">内容未索引</span></td>
 					{% else %}
@@ -92,7 +94,6 @@
                    	<div>
                    	<p>
                    	<a href="/web/details/{{ i.id }}" class="btn btn-info btn-xs" role="button" target="_blank">详情</a>
-                   	<a href="/web/terminal/{{ i.id }}" class="btn btn-success btn-xs" role="button" target="_blank">连接</a>
                    	<button type="button" class="btn btn-danger btn-xs" data-toggle="modal" data-target="#myModal{{ i.id }}">删除</button>
                    	</p>
 								<!-- 模态框（Modal） -->

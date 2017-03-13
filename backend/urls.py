@@ -15,11 +15,12 @@ Including another URLconf
 """
 from django.conf.urls import include, url
 from django.contrib import admin
-from views import login,logout,index,submit_doc
+from views import login,logout,index,submit_doc,big_file_download
 
 urlpatterns = [
                url(r'^login/', login),
                url(r'^logout/', logout),
-               url(r'^index/', index),
+               url(r'^index/(\d*)', index),
                url(r'^submit/', submit_doc),
+               url(r'^download/(?P<attachmentid>\d+)/$',big_file_download),
 ]

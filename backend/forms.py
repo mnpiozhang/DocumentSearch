@@ -6,7 +6,7 @@ from django.contrib.admin import widgets
 
 
 class DocumentForm(forms.models.ModelForm):
-    
+    attachment = forms.FileField(allow_empty_file=False,error_messages={'required': '请上传文档文件'})
     class Meta:
         model = DocumentInfo
         fields = ('docname','description','attachment')
@@ -16,6 +16,5 @@ class DocumentForm(forms.models.ModelForm):
                    }
         error_messages = {
                           'docname' :{'required':'请输入文档名称'},
-                          'attachment' :{'required':'请上传文档文件'},
                           'description' :{'required':'请简要填写文档描述，并作为第一搜索依据'}
                           }

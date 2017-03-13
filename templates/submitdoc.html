@@ -1,5 +1,4 @@
 {% extends "suit/suit.html" %}
-{% load attachment_format %}
 {% block title %}新文档提交录入{% endblock %}
 
 
@@ -39,8 +38,12 @@
           		<td>上传文档附件</td>
           	</tr>
           	<tr>
-          		<td><div>{{ form.attachment }}</div></td>
+          		<td><div>{{ form.attachment }}</div>
+	          	{% if form.errors %}
+		        	<label  style="color:red;">{{ form.errors.attachment }}</label>
+		        {% endif %}</td>
           	</tr>
+
         </table>
         
         <div class="form-group">
