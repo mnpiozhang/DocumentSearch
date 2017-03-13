@@ -1,9 +1,10 @@
 #!/usr/bin/env python
 # -*- coding:utf-8 -*-
-from django.shortcuts import render
-from django.shortcuts import redirect,HttpResponse,render_to_response
+from django.template.context_processors import csrf
+from django.shortcuts import redirect,HttpResponse,render_to_response,render
 from django.views.decorators.csrf import csrf_exempt
-from models import UserInfo
+from models import UserInfo,DocumentInfo
+from forms import DocumentForm
 from decorators import is_login_auth
 # Create your views here.
 
@@ -40,54 +41,50 @@ def logout(request):
     return redirect("/backend/login/")
 
 
-#大屏首页
+#首页
 @is_login_auth
 def index(request):
-    ret = {'UserName':None,'UserInfoObj':None}
+    ret = {'UserName':None,'UserInfoObj':None,'DocumentInfo':None}
     ret['UserName'] = request.session.get('username',None)
     UserInfoObj = UserInfo.objects.get(username=ret['UserName'])
     ret['UserInfoObj'] = UserInfoObj
+    DocumentInfoObj = DocumentInfo.objects.all()
+    ret['DocumentInfo'] = DocumentInfoObj
     #设置session超时时间
     #request.session.set_expiry(0)
     return render_to_response('index.html',ret)
 
-
-
-
-
-#文档上传功能
+#提交新文档
 @is_login_auth
-def otheroperation(request,id):
-    ret = {'UserName':None,'form':None,'status':'','id':None,'AttachmentsFileObj':None,'WorkOrderObj':None,'UserInfoObj':None}
+def submit_doc(request):
+    ret = {'UserName':None,'form':None,'UserInfoObj':None}
     ret['UserName'] = request.session.get('username',None)
+    #WorkOrderObj = WorkOrder.objects.create()
     UserInfoObj = UserInfo.objects.get(username=ret['UserName'])
     ret['UserInfoObj'] = UserInfoObj
-    ret['id'] = id
-    WorkOrderObj = WorkOrder.objects.get(id=id)
-    ret['WorkOrderObj'] = WorkOrderObj
     if request.method == 'POST':
-        Attachments_form = AttachmentsForm(request.POST,request.FILES)
-        if Attachments_form.is_valid():
-            #获取表单数据
-            attachmentsfile = Attachments_form.cleaned_data['attachment']
-            #插入数据库
-            attachments = Attachments()
-            attachments.ordernumber = WorkOrderObj
-            attachments.attachment = attachmentsfile
-            attachments.save()
-            ret['status'] = '上传成功'
+        DocumentObj_form = DocumentForm(request.POST,request.FILES)
+        if DocumentObj_form.is_valid():
+            DocumentObj = DocumentObj_form.save(commit=False)
+            #索引状态放置为s即开始所以
+            DocumentObj.indexstate = 's'
+            DocumentObj.save()
+
+            ret['status'] = 'save ok'
+            
         else:
-            ret['status'] = '上传失败'
-            ret['form'] = Attachments_form
+            ret['status'] = 'save error'
+            ret['form'] = DocumentObj_form
+            #添加跨站请求伪造的认证
             ret.update(csrf(request))
-            return render_to_response('otheroperation.html',ret)
-    
-    AttachmentsFileObj = Attachments.objects.filter(ordernumber=WorkOrderObj)
-    ret['AttachmentsFileObj'] = AttachmentsFileObj
-    Attachments_form = AttachmentsForm()
-    ret['form'] = Attachments_form
+            return render(request,'submitdoc.html',ret)
+            
+    DocumentObj_form = DocumentForm()
+    ret['form'] = DocumentObj_form
+    #添加跨站请求伪造的认证
     ret.update(csrf(request))
-    return render_to_response('otheroperation.html',ret)
+    return render_to_response('submitdoc.html',ret)
+
 
 #文件下载功能
 @is_login_auth
