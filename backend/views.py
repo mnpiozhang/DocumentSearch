@@ -9,7 +9,7 @@ from models import UserInfo,DocumentInfo
 from forms import DocumentForm
 from decorators import is_login_auth
 import platform,os
-from utils.common  import  Page,page_div,query_page_div
+from utils.common  import  Page,page_div,query_page_div,get_doc_page_info
 from DocumentSearch import settings
 import datetime
 from django.db.models import Q
@@ -98,25 +98,15 @@ def index(request,page=1):
             return render_to_response('index.html',ret,context_instance=RequestContext(request))
         #正常主页的分页显示
         else:
-            allDoc = DocumentInfo.objects.all()
-            AllCount = allDoc.count()
-            ret['AllCount'] = AllCount
-            PageObj = Page(AllCount,page,6)
-            DocumentInfoObj = allDoc[PageObj.begin:PageObj.end]
-            pageurl = 'index'
-            pageinfo = page_div(page, PageObj.all_page_count,pageurl)
-            ret['PageInfo'] = pageinfo
-            ret['DocumentInfoObj'] = DocumentInfoObj
+            docPage = get_doc_page_info(DocumentInfo,page,'n')
+            ret['AllCount'] = docPage['AllCount']
+            ret['PageInfo'] = docPage['PageInfo']
+            ret['DocumentInfoObj'] = docPage['DocumentInfoObj']
             UserInfoObj = UserInfo.objects.get(username=request.session.get('username',None))
             ret['UserInfoObj'] = UserInfoObj
             return render_to_response('index.html',ret,context_instance=RequestContext(request))
     else:
         return HttpResponse("this is a web page , please use metod GET")
-
-
-
-
-
 
 
 #提交新文档
@@ -192,3 +182,46 @@ def big_file_download(request,attachmentid):
         response['Content-Disposition'] = 'attachment;filename=' + the_file_name.encode('gbk').split("/")[-1]
     
     return response
+
+#批量删除主机信息
+@is_login_auth
+def batchdeldoc(request):
+    if request.method == 'POST':
+        #根据传进来的主机id批量删除数据库对象
+        ret = {'DocumentInfoObj':None,'UserInfoObj':None,'PageInfo':None,'AllCount':None}
+        will_del_doc = request.POST.getlist("checkboxdel[]",None)
+        if will_del_doc:
+            for i in will_del_doc:
+                DocumentInfoObj = DocumentInfo.objects.get(id=i)
+                DocumentInfoObj.delete()
+            ids = ",".join(will_del_doc)
+            ret['popover'] = { "id":ids,"info":"已经删除以下编号的文档" }
+        else:
+            ret['popover'] = { "id":"","info":"没有选中可删除的文档" }
+        page = 1
+        docPage = get_doc_page_info(DocumentInfo,page,'n')
+        ret['AllCount'] = docPage['AllCount']
+        ret['PageInfo'] = docPage['PageInfo']
+        ret['DocumentInfoObj'] = docPage['DocumentInfoObj']
+        UserInfoObj = UserInfo.objects.get(username=request.session.get('username',None))
+        ret['UserInfoObj'] = UserInfoObj
+        return render_to_response('index.html',ret,context_instance=RequestContext(request))
+    else:
+        return HttpResponseNotFound('<h1>Page not found</h1>')
+    
+    
+#删除文档信息
+@is_login_auth
+def deldoc(request,id):
+    DocumentInfoObj = DocumentInfo.objects.get(id=id)
+    DocumentInfoObj.delete()
+    ret = {'DocumentInfoObj':None,'UserInfoObj':None,'PageInfo':None,'AllCount':None}
+    page = 1
+    docPage = get_doc_page_info(DocumentInfo,page,'n')
+    ret['AllCount'] = docPage['AllCount']
+    ret['PageInfo'] = docPage['PageInfo']
+    ret['DocumentInfoObj'] = docPage['DocumentInfoObj']
+    UserInfoObj = UserInfo.objects.get(username=request.session.get('username',None))
+    ret['UserInfoObj'] = UserInfoObj
+    ret['popover'] = { "id":id,"info":"已经删除文档" }
+    return render_to_response('index.html',ret,context_instance=RequestContext(request))

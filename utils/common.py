@@ -128,3 +128,29 @@ def query_page_div(page,all_page_count,pageurl,querycondition):
     #将列表类型的页面转换成字符串并且转义html标签能在前台显示
     return mark_safe(' '.join(pagelist))
 
+def get_doc_page_info(DocumentModel,page=1,queryflag='n',querycondition=None):
+    '''
+    input 信息如下
+    DocumentModel是查询的整个基本信息表
+    page 当前所在页
+    queryflag 判断分页是否含有查询信息，如果该标记为字符n则是普通查询，是q则是含有查询条件的查询
+    
+    return 一个字典，还有如下信息
+    AllCount:所有的对象数量
+    DocumentInfoObj:每一页显示的文档对象
+    PageInfo:下发分页栏的相关信息.如一共几页现在为第几页等等
+    '''
+    allDoc = DocumentModel.objects.all()
+    AllCount = allDoc.count()
+    #默认一页显示6条记录
+    PageObj = Page(AllCount,page,6)
+    DocumentInfoObj = allDoc[PageObj.begin:PageObj.end]
+    pageurl = 'index'
+    if queryflag == 'n':
+        pageinfo = page_div(page, PageObj.all_page_count,pageurl)
+    else:
+        if not querycondition:
+            raise NameError('error ! please input querycondition')
+        pageinfo = query_page_div(page, PageObj.all_page_count,pageurl,querycondition)
+    
+    return {'AllCount':AllCount,'DocumentInfoObj':DocumentInfoObj,'PageInfo':pageinfo}

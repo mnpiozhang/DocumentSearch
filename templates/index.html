@@ -24,7 +24,7 @@
 		</div>
 	</form>
 
-	<form action='/web/batchdel/' method='POST'>{% csrf_token %}
+	<form action='/backend/batchdel/' method='POST'>{% csrf_token %}
 	<div><span><button type="button" class="btn btn-danger radius" data-toggle="modal" data-target="#myBatchDel">批量删除</button></span> <span>共有数据：<strong>{{ AllCount }}</strong> 条</span> </div>
 	<!-- 批量删除的模态框（Modal） -->
 	<div class="modal fade" id="myBatchDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -39,7 +39,7 @@
 	            </h4>
 	         	</div>
 	         	<div class="modal-body">
-			 	确定要批量删除主机了？
+			 	确定要批量删除这些文档信息？
 	         	</div>
 	         <div class="modal-footer">
 	            <button type="button" class="btn btn-default" data-dismiss="modal">
@@ -58,10 +58,10 @@
 					<th width="20">ID</th>
 					<th width="80">文档名称</th>
 					<th width="75">附件</th>
-					<th width="30">创建时间</th>
-					<th width="30">修改时间</th>
+					<th width="50">创建时间</th>
+					<th width="50">修改时间</th>
 					<th width="60">索引状态</th>
-					<th width="120">操作</th>
+					<th width="60">操作</th>
 				</tr>
 			</thead>
 			{% for i in DocumentInfoObj %}
@@ -97,13 +97,13 @@
 								            </h4>
 								         	</div>
 								         	<div class="modal-body">
-										 	主机号{{ i.id　}} 主机名 {{ i.hostname }} 要删除了？
+										 	文档号{{ i.id　}} 文档名 {{ i.docname }} 要删除了？
 								         	</div>
 								         <div class="modal-footer">
 								            <button type="button" class="btn btn-default" data-dismiss="modal">
 											关闭
 								            </button>
-								            <a href="/web/del/{{ i.id　}}"  class="btn btn-primary" role="button">
+								            <a href="/backend/del/{{ i.id　}}"  class="btn btn-primary" role="button">
 											确认
 								            </a>
 								         </div>
@@ -126,7 +126,7 @@
 <div id="myPopover" class="alert alert-warning">
 	<a href="#" class="close" data-dismiss="alert">&times;</a>
 	{% if popover.id %}
-	<strong>成功！</strong>删除了主机{{ popover.id }}
+	<strong>成功！</strong>删除了文档编号为{{ popover.id }}
 	{% else %}
 	<strong>抱歉！</strong>{{ popover.info }}
 	{% endif %}
