@@ -11,6 +11,8 @@ from decorators import is_login_auth
 import platform,os
 from utils.common  import  Page,page_div,query_page_div
 from DocumentSearch import settings
+import datetime
+from django.db.models import Q
 # Create your views here.
 
 #登陆
@@ -57,21 +59,13 @@ def index(request,page=1):
     if request.method == 'GET':
         #查询页面的分页显示
         if request.GET.get('issearch',None):
-            searchos = request.GET.get('searchos',None)
-            searchhostname = request.GET.get('searchhostname',None)
-            searchsn = request.GET.get('searchsn',None)
-            searchpublish = request.GET.get('searchpublish',None)
-            searchip = request.GET.get('searchip',None)
+            searchindexstate = request.GET.get('searchindexstate',None)
             tmpstarttime = request.GET.get('searchstarttime',None)
             tmpendtime = request.GET.get('searchendtime',None)
             Qset = {}
-            Qset['searchos'] = searchos
-            Qset['searchhostname'] = searchhostname
-            Qset['searchsn'] = searchsn
-            Qset['searchpublish'] = searchpublish
-            Qset['searchip'] = searchip
-            Qset['tmpstarttime'] = tmpstarttime
-            Qset['tmpendtime'] = tmpendtime
+            Qset['indexstate'] = searchindexstate
+            Qset['searchstarttime'] = tmpstarttime
+            Qset['searchendtime'] = tmpendtime
 
             #判断是否输入了开始时间，没输入或输入非法则默认为1970.01.01
             try:
@@ -83,25 +77,24 @@ def index(request,page=1):
                 searchendtime = datetime.datetime.strptime(tmpendtime,'%Y-%m-%d')
             except:
                 searchendtime = datetime.datetime.now()
-            allServer = HostInfo.objects(Q(os__contains=searchos)
-                                         &Q(networkinfo__addrlst__contains=searchip)
-                                         &Q(hostname__contains=searchhostname)
-                                         &Q(ispublish__contains=searchpublish)
-                                         &Q(hardwareinfo__SN__contains=searchsn)
-                                         &Q(timestamp__gte=searchstarttime)
-                                         &Q(timestamp__lte=searchendtime))
-            AllCount = allServer.count()
+            allDoc = DocumentInfo.objects.filter(
+                                                 Q(indexstate__startswith=searchindexstate)
+                                                 &Q(timestamp__gte=searchstarttime)
+                                                 &Q(timestamp__lte=searchendtime)
+                                                 )
+            AllCount = allDoc.count()
             ret['AllCount'] = AllCount
             PageObj = Page(AllCount,page,6)
-            allServerObj = allServer[PageObj.begin:PageObj.end]
+            DocumentInfoObj = allDoc[PageObj.begin:PageObj.end]
             pageurl = 'index'
             querycondition = request.META.get("QUERY_STRING",None)
             pageinfo = query_page_div(page, PageObj.all_page_count,pageurl,querycondition)
             ret['PageInfo'] = pageinfo
-            ret['allServerObj'] = allServerObj
+            ret['DocumentInfoObj'] = DocumentInfoObj
             UserInfoObj = UserInfo.objects.get(username=request.session.get('username',None))
             ret['UserInfoObj'] = UserInfoObj
             ret['Qset'] = Qset
+            print Qset
             return render_to_response('index.html',ret,context_instance=RequestContext(request))
         #正常主页的分页显示
         else:

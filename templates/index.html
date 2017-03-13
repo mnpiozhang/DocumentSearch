@@ -4,38 +4,26 @@
 
 <nav class="breadcrumb">首页 <span class="c-gray en">&gt;</span>主机资讯列表 </nav>
 <div>
- <!-- 
-	<form action='/web/index/' method='GET'>
-		<span class="select-box inline">
-		<select name="searchos" class="select">
-			<option value="" >os分类</option>
-			<option value="centos" {% ifequal Qset.searchos "centos" %}selected = "selected"{% endifequal %} >centos</option>
-			<option value="Ubuntu" {% ifequal Qset.searchos "Ubuntu" %}selected = "selected"{% endifequal %} >Ubuntu</option>
-		</select>
-		</span>
-		<span class="select-box inline">
-		<select name="searchpublish" class="select">
-			<option value="">是否发布</option>
-			<option value="1" {% ifequal Qset.searchpublish "1" %}selected = "selected"{% endifequal %} >已发布</option>
-			<option value="0" {% ifequal Qset.searchpublish "0" %}selected = "selected"{% endifequal %} >已下架</option>
-		</select>
-		</span>
+
+	<form action='/backend/index/' method='GET'>
 		<input type="hidden" name="issearch" value=1>
-		<label>主机名:</label>
-		<input type="text" name="searchhostname" id="" placeholder="根据主机名" style="width:250px" class="input-text" value="{{ Qset.searchhostname }}">
-		<label>序列号:</label>
-		<input type="text" name="searchsn" id="" placeholder="根据序列号" style="width:250px" class="input-text" value="{{ Qset.searchsn }}" >
-		<label>ip地址:</label>
-		<input type="text" name="searchip" id="" placeholder="根据ip地址" style="width:250px" class="input-text" value="{{ Qset.searchip }}" >
+		<span class="select-box inline">
+		<select name="searchindexstate" class="select">
+			<option value="" >索引状态</option>
+			<option value="s" {% ifequal Qset.indexstate "s" %}selected = "selected"{% endifequal %} >未索引</option>
+			<option value="i" {% ifequal Qset.indexstate "i" %}selected = "selected"{% endifequal %} >索引中</option>
+			<option value="f" {% ifequal Qset.indexstate "f" %}selected = "selected"{% endifequal %} >索引完成</option>
+		</select>
+		</span>
 		<div>
 		<label>根据创建时间搜索--开始:</label>
-		<input type="text" name="searchstarttime" id="" placeholder="开始时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.tmpstarttime }}">
+		<input type="text" name="searchstarttime" id="" placeholder="开始时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.searchstarttime }}">
 		<label>根据创建时间搜索--结束:</label>
-		<input type="text" name="searchendtime" id="" placeholder="结束时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.tmpendtime }}">
+		<input type="text" name="searchendtime" id="" placeholder="结束时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.searchendtime }}">
 		<button class="btn btn-success" type="submit">搜索</button>
 		</div>
 	</form>
- -->
+
 	<form action='/web/batchdel/' method='POST'>{% csrf_token %}
 	<div><span><button type="button" class="btn btn-danger radius" data-toggle="modal" data-target="#myBatchDel">批量删除</button></span> <span>共有数据：<strong>{{ AllCount }}</strong> 条</span> </div>
 	<!-- 批量删除的模态框（Modal） -->
