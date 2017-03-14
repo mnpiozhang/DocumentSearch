@@ -10,6 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.8/ref/settings/
 """
 
+#elasticsearch
+ES_URL = "http://127.0.0.1:9200"
+
 #celery setting
 CELERY_BROKER_URL = 'redis://192.168.188.129:9379' 
 CELERY_RESULT_BACKEND = 'redis://192.168.188.129:9379' 
