@@ -27,9 +27,10 @@ class UserInfo(models.Model):
         return self.realname
 
 INDEX_STATUS = (
-                  ('s','start index'),
+                  ('b','begin index'),
                   ('i','indexing'),
                   ('f','index fail'),
+                  ('s','index success'),
                     )
 
 class DocumentInfo(models.Model):

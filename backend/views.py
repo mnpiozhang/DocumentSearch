@@ -127,7 +127,7 @@ def submit_doc(request):
         if DocumentObj_form.is_valid() and file_flag:
             DocumentObj = DocumentObj_form.save(commit=False)
             #索引状态放置为s即开始所以
-            DocumentObj.indexstate = 's'
+            DocumentObj.indexstate = 'b'
             DocumentObj.save()
             analyze_uploadfile_task.delay(DocumentObj.id,file_flag)
             ret['status'] = 'save ok'
