@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+# -*- coding:utf-8 -*-
 from celery.decorators import task  
 from celery.utils.log import get_task_logger  
 from models import DocumentInfo

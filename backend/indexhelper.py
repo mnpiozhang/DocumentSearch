@@ -8,6 +8,8 @@ from pdfminer.layout import LAParams
 from pdfminer.pdfinterp import PDFResourceManager,PDFPageInterpreter
 from pdfminer.converter import TextConverter
 from cStringIO import StringIO
+from elasticsearch import Elasticsearch
+import json
 
 def get_file_absolute_path(relative_file):
     sys_type = platform.system()
@@ -26,7 +28,7 @@ def get_file_absolute_path(relative_file):
 #导入数据到elasticsearch
 def sync_es(inputdict,idnum):
     es = Elasticsearch([settings.ES_URL])
-    articlemapping = {
+    documentmapping = {
                       "mappings" : {
                                     "documentsearch" : {
                                                 "_all": {
@@ -61,9 +63,9 @@ def sync_es(inputdict,idnum):
                                                  }
                                     }
                       }
-    indexName = "documentIndex"
+    indexName = "documentindex"
     if not es.indices.exists(indexName):
-        es.indices.create(index = indexName, body = articlemapping,ignore = 400)
+        es.indices.create(index = indexName, body = documentmapping,ignore = 400)
     return es.index(index=indexName, doc_type="documentsearch", body=inputdict, id=idnum)
 
 
@@ -71,9 +73,10 @@ def import_txt_content(id,doc_title,doc_description,filepath):
     with open(filepath.decode("utf-8"),'rU') as f:
         f_content = f.read()
     es_import_dict = {}
-    es_import_dict['docname'] = doc_title
-    es_import_dict['description'] = doc_description
-    es_import_dict['content'] = f_content
+    es_import_dict[u'docname'] = doc_title
+    es_import_dict[u'description'] = doc_description
+    es_import_dict[u'content'] = unicode(f_content.decode('gbk'))
+    #print json.dumps(es_import_dict)
     return sync_es(es_import_dict,id)
 
 def import_word_content(id,doc_title,doc_description,filepath):
@@ -82,9 +85,9 @@ def import_word_content(id,doc_title,doc_description,filepath):
                          paragraph.text.encode('utf-8') for paragraph in document.paragraphs
                          ])
     es_import_dict = {}
-    es_import_dict['docname'] = doc_title
-    es_import_dict['description'] = doc_description
-    es_import_dict['content'] = docText
+    es_import_dict[u'docname'] = doc_title
+    es_import_dict[u'description'] = doc_description
+    es_import_dict[u'content'] = docText
     return sync_es(es_import_dict,id)
 
 def import_pdf_content(id,doc_title,doc_description,filepath):
@@ -105,7 +108,7 @@ def import_pdf_content(id,doc_title,doc_description,filepath):
     except Exception,e:
         print e
     es_import_dict = {}
-    es_import_dict['docname'] = doc_title
-    es_import_dict['description'] = doc_description
-    es_import_dict['content'] = str
+    es_import_dict[u'docname'] = doc_title
+    es_import_dict[u'description'] = doc_description
+    es_import_dict[u'content'] = str.decode("utf-8")
     return sync_es(es_import_dict,id)

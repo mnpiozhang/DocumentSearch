@@ -162,11 +162,11 @@ class filenameJudge(object):
         suffix_txt = re.compile('\.txt$',flags=re.I)
         suffix_word = re.compile('\.docx?$',flags=re.I)
         suffix_pdf = re.compile('\.pdf$',flags=re.I)
-        if re.search(suffix_txt,filename):
+        if re.search(suffix_txt,self.filename):
             return 'txt'
-        elif re.search(suffix_word,filename):
+        elif re.search(suffix_word,self.filename):
             return 'word'
-        elif re.search(suffix_pdf,filename):
+        elif re.search(suffix_pdf,self.filename):
             return 'pdf'
         else:
             return None
