@@ -9,7 +9,7 @@ from models import UserInfo,DocumentInfo
 from forms import DocumentForm
 from decorators import is_login_auth
 import platform,os
-from utils.common  import  Page,page_div,query_page_div,get_doc_page_info
+from utils.common  import  Page,page_div,query_page_div,get_doc_page_info,filenameJudge
 from DocumentSearch import settings
 import datetime
 from django.db.models import Q
@@ -120,13 +120,16 @@ def submit_doc(request):
     ret['UserInfoObj'] = UserInfoObj
     if request.method == 'POST':
         DocumentObj_form = DocumentForm(request.POST,request.FILES)
-        if DocumentObj_form.is_valid():
+        upload_filename = request.FILES['attachment'].name
+        #django.core.files.uploadedfile.InMemoryUploadedFile
+        fileSuffixObj = filenameJudge(upload_filename)
+        file_flag = fileSuffixObj.suffix_judge()
+        if DocumentObj_form.is_valid() and file_flag:
             DocumentObj = DocumentObj_form.save(commit=False)
             #索引状态放置为s即开始所以
             DocumentObj.indexstate = 's'
             DocumentObj.save()
-            analyze_uploadfile_task.delay(DocumentObj.id)
-            
+            analyze_uploadfile_task.delay(DocumentObj.id,file_flag)
             ret['status'] = 'save ok'
             
         else:

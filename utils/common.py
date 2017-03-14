@@ -154,3 +154,19 @@ def get_doc_page_info(DocumentModel,page=1,queryflag='n',querycondition=None):
         pageinfo = query_page_div(page, PageObj.all_page_count,pageurl,querycondition)
     
     return {'AllCount':AllCount,'DocumentInfoObj':DocumentInfoObj,'PageInfo':pageinfo}
+
+class filenameJudge(object):
+    def __init__(self,filename):
+        self.filename = filename
+    def suffix_judge(self):
+        suffix_txt = re.compile('\.txt$',flags=re.I)
+        suffix_word = re.compile('\.docx?$',flags=re.I)
+        suffix_pdf = re.compile('\.pdf$',flags=re.I)
+        if re.search(suffix_txt,filename):
+            return 'txt'
+        elif re.search(suffix_word,filename):
+            return 'word'
+        elif re.search(suffix_pdf,filename):
+            return 'pdf'
+        else:
+            return None
