@@ -59,6 +59,10 @@ def sync_es(inputdict,idnum):
                                                                     "include_in_all": "true",
                                                                     "boost": 8
                                                                     },
+                                                        "filepath" : {
+                                                                    "type" : "string",
+                                                                    "index":"not_analyzed"
+                                                                    },
                                                                 }
                                                  }
                                     }
@@ -75,6 +79,7 @@ def import_txt_content(id,doc_title,doc_description,filepath):
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
+    es_import_dict[u'filepath'] = filepath
     try:
         tmpcontent = unicode(f_content.decode('utf-8'))
     except:
@@ -91,6 +96,7 @@ def import_word_content(id,doc_title,doc_description,filepath):
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
+    es_import_dict[u'filepath'] = filepath
     es_import_dict[u'content'] = unicode(docText.decode('utf-8'))
     return sync_es(es_import_dict,id)
 
@@ -111,5 +117,6 @@ def import_pdf_content(id,doc_title,doc_description,filepath):
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
+    es_import_dict[u'filepath'] = filepath
     es_import_dict[u'content'] = unicode(pdfstr.decode("utf-8"))
     return sync_es(es_import_dict,id)
