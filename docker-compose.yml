@@ -15,10 +15,11 @@ services:
       - ./es/data:/usr/share/elasticsearch/data
       - ./es/logs:/usr/share/elasticsearch/logs
     ports:
-      - "9200:9200"
+      - "19200:9200"
   redis:
     image: redis
   celery:
     build: ./dsDockerfiles/celery
+    command: celery  -A DocumentSearch worker
     depends_on:
       - redis

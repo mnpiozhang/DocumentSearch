@@ -18,4 +18,4 @@ RUN pip install mysqlclient psycopg2 django=="$DJANGO_VERSION"  python-docx=="0.
 ENV TZ Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-CMD ["python", "run.py","0.0.0.0:8080"]
+CMD ["python", "manage.py","runserver","0.0.0.0:8080"]
