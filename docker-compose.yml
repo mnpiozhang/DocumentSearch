@@ -25,3 +25,4 @@ services:
     command: celery  -A DocumentSearch worker
     depends_on:
       - redis
+      - elastic
