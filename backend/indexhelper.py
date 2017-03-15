@@ -80,35 +80,32 @@ def import_txt_content(id,doc_title,doc_description,filepath):
     return sync_es(es_import_dict,id)
 
 def import_word_content(id,doc_title,doc_description,filepath):
-    document = docx.Document(filepath.decode("utf-8"))
+    document = docx.Document(filepath)
     docText = '\n'.join([
                          paragraph.text.encode('utf-8') for paragraph in document.paragraphs
                          ])
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
-    es_import_dict[u'content'] = docText
+    es_import_dict[u'content'] = unicode(docText.decode('utf-8'))
     return sync_es(es_import_dict,id)
 
 def import_pdf_content(id,doc_title,doc_description,filepath):
-    try:
-        retstr = StringIO()
-        rsrcmgr = PDFResourceManager()
-        laparams = LAParams()
-        codec = 'utf-8'
-        device = TextConverter(rsrcmgr,retstr,codec=codec,laparams=laparams)
-        with open(filepath.decode("utf-8"), 'rb') as f:
-            interpreter = PDFPageInterpreter(rsrcmgr, device)
-            for page in PDFPage.get_pages(f):
-                interpreter.process_page(page)
-                
-        device.close()
-        str = retstr.getvalue()
-        retstr.close()
-    except Exception,e:
-        print e
+    retstr = StringIO()
+    rsrcmgr = PDFResourceManager()
+    laparams = LAParams()
+    codec = 'utf-8'
+    device = TextConverter(rsrcmgr,retstr,codec=codec,laparams=laparams)
+    with open(filepath, 'rb') as f:
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        for page in PDFPage.get_pages(f):
+            interpreter.process_page(page)
+            
+    device.close()
+    pdfstr = retstr.getvalue()
+    retstr.close()
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
-    es_import_dict[u'content'] = str.decode("utf-8")
+    es_import_dict[u'content'] = unicode(pdfstr.decode("utf-8"))
     return sync_es(es_import_dict,id)
