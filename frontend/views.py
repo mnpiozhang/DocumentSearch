@@ -16,12 +16,9 @@ def search(request):
         if hitcount == 0:
             ret = {'Search':search,'Hit':0,'Doc':None}
         else:
-            #重新定义hitcount避免草稿的数量也统计进去.
-            #如果搜索hit为1，但是命中的文章为草稿，则hitcount重置为0，无搜索结果
             hitcount = 0
             DocLst = []
             for i in result["hits"]["hits"]:
-                #判断是否为草稿，草稿直接pass
                 tmpdict = {}
                 tmpdict['id'] = i['_id']
                 tmpdict['title'] = i['_source']['docname']

@@ -1,3 +1,4 @@
+{% load attachment_format %}
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,18 +36,28 @@
 
 {% if Search %}
 <section  style="margin-top:0;">
-	<div style="border-left: 5px solid #333;font-size:1.5em;text-align: center;">搜索: {{ Search }}</div>
-	<div  style="border-left: 5px solid #333;font-size:1.5em;text-align: center;">结果条数: {{ Hit }}</div>
+	<div style="font-size:1.5em;text-align: center;">搜索: {{ Search }}</div>
+	<div style="font-size:1.5em;text-align: center;">结果条数: {{ Hit }}</div>
 </section>
 
 
-<section>
+
 	{% for a in Doc %}
-	<div class="vol-header">
-    <h1><a class="vol-title" href="/blog/show/{{ a.id }}" >{{ a.docname }}</a></h1>
+	
+	<div class="panel panel-default" style="margin: 1em 8em;">
+		<div class="panel-heading">
+			{{ a.title }}
+		</div>
+		<div class="panel-body">
+			<p>{{ a.description|truncatechars:250}}</p>
+		</div>
+		<div class="panel-body">
+			<a href="/backend/download/{{ a.id　}}">{{ a.filepath|attachment_format }}</a>
+		</div>
 	</div>
+
 	{% endfor %}
-</section>
+
 {% endif %}
 
 

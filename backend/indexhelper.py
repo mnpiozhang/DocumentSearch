@@ -61,7 +61,7 @@ def sync_es(inputdict,idnum):
                                                                     },
                                                         "filepath" : {
                                                                     "type" : "string",
-                                                                    "index":"not_analyzed"
+                                                                    "index":"no"
                                                                     },
                                                                 }
                                                  }
@@ -129,6 +129,7 @@ def search_result(queryStatements):
         "query" : { 
             "query_string" : {
                 "analyze_wildcard" : "true",
+                "default_operator" : "AND",
                 "query" : queryStatements
             }
         }
