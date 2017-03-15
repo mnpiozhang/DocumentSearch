@@ -20,6 +20,8 @@ services:
     image: redis
   celery:
     build: ./dsDockerfiles/celery
+    volumes:
+      - .:/home/user
     command: celery  -A DocumentSearch worker
     depends_on:
       - redis

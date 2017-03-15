@@ -13,9 +13,9 @@ ENV DJANGO_VERSION 1.8.14
 WORKDIR /usr/src/app
 EXPOSE 8000
 
-RUN pip install mysqlclient psycopg2 django=="$DJANGO_VERSION"  python-docx=="0.8.6" celery=="4.0.1"  pdfminer
+RUN pip install mysqlclient psycopg2 django=="$DJANGO_VERSION"  python-docx=="0.8.6" celery=="4.0.1"  pdfminer elasticsearch redis
 
 ENV TZ Asia/Shanghai
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-CMD ["python", "manage.py","runserver","0.0.0.0:8080"]
+CMD ["python", "manage.py","runserver","0.0.0.0:8000"]
