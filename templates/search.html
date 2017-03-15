@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>文档搜索</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="/static/bootstrap/css/bootstrap.min.css">
+  <script src="/static/jquery/jquery.min.js"></script>
+  <script src="/static/jquery/jquery.validate.min.js"></script>
+  <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="text-center">
+<div class="container">
+	<div class="jumbotron">
+		<h1>欢迎使用文档搜索功能</h1>
+		<form action="/" method="POST"  class="bs-example bs-example-form">{% csrf_token %}
+			<div class="row">
+				<div class="col-lg">
+					<div class="input-group">
+						<input type="text" class="form-control"  name="search">
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="submit">
+								搜索
+							</button>
+						</span>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+</div>
+
+{% if Search %}
+<section  style="margin-top:0;">
+	<div style="border-left: 5px solid #333;font-size:1.5em;text-align: center;">搜索: {{ Search }}</div>
+	<div  style="border-left: 5px solid #333;font-size:1.5em;text-align: center;">结果条数: {{ Hit }}</div>
+</section>
+
+
+<section>
+	{% for a in Doc %}
+	<div class="vol-header">
+    <h1><a class="vol-title" href="/blog/show/{{ a.id }}" >{{ a.docname }}</a></h1>
+	</div>
+	{% endfor %}
+</section>
+{% endif %}
+
+
+
+</body>
+</html>

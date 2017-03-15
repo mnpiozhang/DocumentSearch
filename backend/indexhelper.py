@@ -120,3 +120,19 @@ def import_pdf_content(id,doc_title,doc_description,filepath):
     es_import_dict[u'filepath'] = filepath
     es_import_dict[u'content'] = unicode(pdfstr.decode("utf-8"))
     return sync_es(es_import_dict,id)
+
+
+def search_result(queryStatements):
+    es = Elasticsearch([settings.ES_URL])
+    indexName = "documentindex"
+    queryBody = {
+        "query" : { 
+            "query_string" : {
+                "analyze_wildcard" : "true",
+                "query" : queryStatements
+            }
+        }
+    }
+    #print queryBody
+    queryResult = es.search(index=indexName,body=queryBody)
+    return queryResult
