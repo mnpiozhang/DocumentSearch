@@ -75,7 +75,11 @@ def import_txt_content(id,doc_title,doc_description,filepath):
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
-    es_import_dict[u'content'] = unicode(f_content.decode('gbk'))
+    try:
+        tmpcontent = unicode(f_content.decode('utf-8'))
+    except:
+        tmpcontent = unicode(f_content.decode('gbk'))
+    es_import_dict[u'content'] = tmpcontent
     #print json.dumps(es_import_dict)
     return sync_es(es_import_dict,id)
 

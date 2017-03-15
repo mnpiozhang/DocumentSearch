@@ -75,9 +75,16 @@
 					<td>{{ i.timestamp|date:"Y-m-d H:i" }}</td>
 					<td>{{ i.modifiedtime|date:"Y-m-d H:i" }}</td>
 					{% ifequal i.indexstate "s" %}
-					<td class="td-status"><span class="label label-success">内容未索引</span></td>
-					{% else %}
-					<td class="td-status"><span class="label label-warning">已下架</span></td>
+					<td class="td-status"><span class="label label-success">索引成功</span></td>
+					{% endifequal %}
+					{% ifequal i.indexstate "i" %}
+					<td class="td-status"><span class="label label-info">索引中</span></td>
+					{% endifequal %}
+					{% ifequal i.indexstate "b" %}
+					<td class="td-status"><span class="label label-warning">待索引</span></td>
+					{% endifequal %}
+					{% ifequal i.indexstate "f" %}
+					<td class="td-status"><span class="label label-danger">索引失败</span></td>
 					{% endifequal %}
                     <td>
                    	<div>
