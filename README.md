@@ -15,4 +15,4 @@
 上传的流程
 ===========
 
-![index](https://github.com/mnpiozhang/DocumentSearch/tree/master/example/uploadandindex.jpg)
+![index](https://github.com/mnpiozhang/DocumentSearch/blob/master/example/uploadandindex.jpg)
