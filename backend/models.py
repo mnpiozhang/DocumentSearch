@@ -26,6 +26,11 @@ class UserInfo(models.Model):
     def __unicode__(self):
         return self.realname
 
+class DocumentType(models.Model):
+    doctype = models.CharField(max_length=50,verbose_name = u'文档类型')
+    def __unicode__(self):
+        return self.doctype
+
 INDEX_STATUS = (
                   ('b','begin index'),
                   ('i','indexing'),
@@ -40,3 +45,4 @@ class DocumentInfo(models.Model):
     modifiedtime = models.DateTimeField(auto_now = True,verbose_name = u'最近修改时间')
     indexstate = models.CharField(max_length=1, choices=INDEX_STATUS,default='s')
     attachment = models.FileField(upload_to='%Y/%m/%d',blank = True,verbose_name = u'附件文档文件')
+    type = models.ForeignKey(DocumentType,related_name='doc_type',verbose_name = u'文档所属类型')

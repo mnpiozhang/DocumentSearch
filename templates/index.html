@@ -57,11 +57,12 @@
 				<tr>
 					<th width="25"></th>
 					<th width="20">ID</th>
-					<th width="80">文档名称</th>
+					<th width="60">文档名称</th>
+					<th width="60">文档类型</th>
 					<th width="75">附件</th>
 					<th width="50">创建时间</th>
 					<th width="50">修改时间</th>
-					<th width="60">索引状态</th>
+					<th width="40">索引状态</th>
 					<th width="60">操作</th>
 				</tr>
 			</thead>
@@ -71,6 +72,7 @@
 					<td><input type="checkbox" value="{{ i.id }}" name="checkboxdel[]"></td>
 					<td>{{ i.id }}</td>
 					<td>{{ i.docname }}</td>
+					<td>{{ i.type }}</td>
 					<td><a href="/backend/download/{{ i.id　}}">{{ i.attachment|attachment_format }}</a></td>
 					<td>{{ i.timestamp|date:"Y-m-d H:i" }}</td>
 					<td>{{ i.modifiedtime|date:"Y-m-d H:i" }}</td>
