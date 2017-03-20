@@ -97,7 +97,11 @@ def import_word_content(id,doc_title,doc_description,filepath):
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
     es_import_dict[u'filepath'] = filepath
-    es_import_dict[u'content'] = unicode(docText.decode('utf-8'))
+    try:
+        tmpcontent = unicode(docText.decode('utf-8'))
+    except:
+        tmpcontent = unicode(docText.decode('gbk'))
+    es_import_dict[u'content'] = tmpcontent
     return sync_es(es_import_dict,id)
 
 def import_pdf_content(id,doc_title,doc_description,filepath):
@@ -114,11 +118,15 @@ def import_pdf_content(id,doc_title,doc_description,filepath):
     device.close()
     pdfstr = retstr.getvalue()
     retstr.close()
+    try:
+        tmpcontent = unicode(pdfstr.decode('utf-8'))
+    except:
+        tmpcontent = unicode(pdfstr.decode('gbk'))
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
     es_import_dict[u'description'] = doc_description
     es_import_dict[u'filepath'] = filepath
-    es_import_dict[u'content'] = unicode(pdfstr.decode("utf-8"))
+    es_import_dict[u'content'] = tmpcontent
     return sync_es(es_import_dict,id)
 
 
@@ -137,3 +145,8 @@ def search_result(queryStatements):
     #print queryBody
     queryResult = es.search(index=indexName,body=queryBody)
     return queryResult
+
+def del_es_doc(id):
+    es = Elasticsearch([settings.ES_URL])
+    indexName = "documentindex"
+    return es.delete(index=indexName,doc_type="documentsearch",id=id)

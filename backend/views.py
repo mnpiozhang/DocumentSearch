@@ -14,6 +14,7 @@ from DocumentSearch import settings
 import datetime
 from django.db.models import Q
 from tasks import analyze_uploadfile_task
+from indexhelper import del_es_doc
 # Create your views here.
 
 #登陆
@@ -199,6 +200,11 @@ def batch_del_doc(request):
             for i in will_del_doc:
                 DocumentInfoObj = DocumentInfo.objects.get(id=i)
                 DocumentInfoObj.delete()
+                try:
+                    del_es_doc(i)
+                except Exception,e:
+                    print e
+                    print "del this doc id in es error,may be this doc id does not exist "
             ids = ",".join(will_del_doc)
             ret['popover'] = { "id":ids,"info":"已经删除以下编号的文档" }
         else:
@@ -218,19 +224,27 @@ def batch_del_doc(request):
 #删除文档信息
 @is_login_auth
 def del_doc(request,id):
-    DocumentInfoObj = DocumentInfo.objects.get(id=id)
-    DocumentInfoObj.delete()
-    ret = {'DocumentInfoObj':None,'UserInfoObj':None,'PageInfo':None,'AllCount':None}
-    page = 1
-    docPage = get_doc_page_info(DocumentInfo,page,'n')
-    ret['AllCount'] = docPage['AllCount']
-    ret['PageInfo'] = docPage['PageInfo']
-    ret['DocumentInfoObj'] = docPage['DocumentInfoObj']
-    UserInfoObj = UserInfo.objects.get(username=request.session.get('username',None))
-    ret['UserInfoObj'] = UserInfoObj
-    ret['popover'] = { "id":id,"info":"已经删除文档" }
-    return render_to_response('index.html',ret,context_instance=RequestContext(request))
-
+    try:
+        DocumentInfoObj = DocumentInfo.objects.get(id=id)
+        DocumentInfoObj.delete()
+        try:
+            del_es_doc(id)
+        except Exception,e:
+            print e
+            print "del this doc id in es error,may be this doc id does not exist "
+        ret = {'DocumentInfoObj':None,'UserInfoObj':None,'PageInfo':None,'AllCount':None}
+        page = 1
+        docPage = get_doc_page_info(DocumentInfo,page,'n')
+        ret['AllCount'] = docPage['AllCount']
+        ret['PageInfo'] = docPage['PageInfo']
+        ret['DocumentInfoObj'] = docPage['DocumentInfoObj']
+        UserInfoObj = UserInfo.objects.get(username=request.session.get('username',None))
+        ret['UserInfoObj'] = UserInfoObj
+        ret['popover'] = { "id":id,"info":"已经删除文档" }
+        return render_to_response('index.html',ret,context_instance=RequestContext(request))
+    except Exception,e:
+        return HttpResponseNotFound('<h1>Page not found</h1>')
+    
 #编辑文档信息
 @is_login_auth
 def edit(request,id):
