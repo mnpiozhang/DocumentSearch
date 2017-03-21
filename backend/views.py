@@ -2,7 +2,8 @@
 # -*- coding:utf-8 -*-
 from django.template.context_processors import csrf
 from django.shortcuts import redirect,HttpResponse,render_to_response,render
-from django.http.response import StreamingHttpResponse
+from django.http.response import StreamingHttpResponse,HttpResponseRedirect,HttpResponseNotFound
+from django.core.urlresolvers import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.template.context import RequestContext
 from models import UserInfo,DocumentInfo
@@ -225,7 +226,11 @@ def batch_del_doc(request):
 @is_login_auth
 def del_doc(request,id):
     try:
-        DocumentInfoObj = DocumentInfo.objects.get(id=id)
+        try:
+            DocumentInfoObj = DocumentInfo.objects.get(id=id)
+        except Exception,e:
+            print e
+            return HttpResponseRedirect('/backend/index')
         DocumentInfoObj.delete()
         try:
             del_es_doc(id)
