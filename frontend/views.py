@@ -24,6 +24,7 @@ def search(request):
                 tmpdict['title'] = i['_source']['docname']
                 tmpdict['description'] = i['_source']['description']
                 tmpdict['filepath'] = i['_source']['filepath']
+                tmpdict['doctype'] = i['_source']['doctype']
                 DocLst.append(tmpdict)
                 hitcount = hitcount +1
             ret = {'Search':search,'Hit':hitcount,'Doc':DocLst}

@@ -46,9 +46,10 @@
 	
 	<div class="panel panel-default" style="margin: 1em 8em;">
 		<div class="panel-heading">
-			{{ a.title }}
+			文档名 : {{ a.title }}     分类 : {{ a.doctype }}
 		</div>
 		<div class="panel-body">
+			<p>描述</p>
 			<p>{{ a.description|truncatechars:250}}</p>
 		</div>
 		<div class="panel-body">
