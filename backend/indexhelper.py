@@ -45,6 +45,13 @@ def sync_es(inputdict,idnum):
                                                                     "include_in_all": "true",
                                                                     "boost": 8
                                                                     },
+                                                        "doctype" : { 
+                                                                    "type" : "string", 
+                                                                    "analyzer": "ik_max_word",
+                                                                    "search_analyzer": "ik_max_word",
+                                                                    "include_in_all": "true",
+                                                                    "boost": 8
+                                                                    },
                                                         "description" : { 
                                                                     "type" : "string", 
                                                                     "analyzer": "ik_max_word",
@@ -73,11 +80,12 @@ def sync_es(inputdict,idnum):
     return es.index(index=indexName, doc_type="documentsearch", body=inputdict, id=idnum)
 
 
-def import_txt_content(id,doc_title,doc_description,filepath):
+def import_txt_content(id,doc_title,doc_type,doc_description,filepath):
     with open(filepath.decode("utf-8"),'rU') as f:
         f_content = f.read()
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
+    es_import_dict[u'doctype'] = doc_type
     es_import_dict[u'description'] = doc_description
     es_import_dict[u'filepath'] = filepath
     try:
@@ -88,13 +96,14 @@ def import_txt_content(id,doc_title,doc_description,filepath):
     #print json.dumps(es_import_dict)
     return sync_es(es_import_dict,id)
 
-def import_word_content(id,doc_title,doc_description,filepath):
+def import_word_content(id,doc_title,doc_type,doc_description,filepath):
     document = docx.Document(filepath)
     docText = '\n'.join([
                          paragraph.text.encode('utf-8') for paragraph in document.paragraphs
                          ])
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
+    es_import_dict[u'doctype'] = doc_type
     es_import_dict[u'description'] = doc_description
     es_import_dict[u'filepath'] = filepath
     try:
@@ -104,7 +113,7 @@ def import_word_content(id,doc_title,doc_description,filepath):
     es_import_dict[u'content'] = tmpcontent
     return sync_es(es_import_dict,id)
 
-def import_pdf_content(id,doc_title,doc_description,filepath):
+def import_pdf_content(id,doc_title,doc_type,doc_description,filepath):
     retstr = StringIO()
     rsrcmgr = PDFResourceManager()
     laparams = LAParams()
@@ -124,6 +133,7 @@ def import_pdf_content(id,doc_title,doc_description,filepath):
         tmpcontent = unicode(pdfstr.decode('gbk'))
     es_import_dict = {}
     es_import_dict[u'docname'] = doc_title
+    es_import_dict[u'doctype'] = doc_type
     es_import_dict[u'description'] = doc_description
     es_import_dict[u'filepath'] = filepath
     es_import_dict[u'content'] = tmpcontent

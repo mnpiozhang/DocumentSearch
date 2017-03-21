@@ -255,7 +255,7 @@ def del_doc(request,id):
 def edit(request,id):
     ret = {'UserName':None,'form':None,'status':'','id':None,'UserInfoObj':None}
     DocumentInfoObj = DocumentInfo.objects.get(id=id)
-    
+    #print DocumentInfoObj.type
     if request.method == 'POST':
         DocumentInfoObj_form = DocumentForm(data=request.POST,files=request.FILES,instance=DocumentInfoObj)
         if DocumentInfoObj_form.is_valid():

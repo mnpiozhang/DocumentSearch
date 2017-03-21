@@ -15,15 +15,16 @@ def analyze_uploadfile_task(id,flag):
         DocumentInfoObj.indexstate = 'i'
         DocumentInfoObj.save()
         doc_title = DocumentInfoObj.docname
+        doc_type = DocumentInfoObj.type
         doc_description = DocumentInfoObj.description
         file_absolute_path = get_file_absolute_path(DocumentInfoObj.attachment)
         #判断文件flag
         if flag == 'txt':
-            index_result = import_txt_content(id,doc_title,doc_description,file_absolute_path)
+            index_result = import_txt_content(id,doc_title,doc_type,doc_description,file_absolute_path)
         elif flag == 'word':
-            index_result = import_word_content(id,doc_title,doc_description,file_absolute_path)
+            index_result = import_word_content(id,doc_title,doc_type,doc_description,file_absolute_path)
         elif flag == 'pdf':
-            index_result = import_pdf_content(id,doc_title,doc_description,file_absolute_path)
+            index_result = import_pdf_content(id,doc_title,doc_type,doc_description,file_absolute_path)
         else:
             index_result = None
         if index_result:
