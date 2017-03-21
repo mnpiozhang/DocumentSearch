@@ -15,7 +15,7 @@ def analyze_uploadfile_task(id,flag):
         DocumentInfoObj.indexstate = 'i'
         DocumentInfoObj.save()
         doc_title = DocumentInfoObj.docname
-        doc_type = DocumentInfoObj.type
+        doc_type = DocumentInfoObj.type.doctype
         doc_description = DocumentInfoObj.description
         file_absolute_path = get_file_absolute_path(DocumentInfoObj.attachment)
         #判断文件flag
