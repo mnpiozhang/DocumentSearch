@@ -45,11 +45,10 @@
 	{% for a in Doc %}
 	
 	<div class="panel panel-default" style="margin: 1em 8em;">
-		<div class="panel-heading">
-			文档名 : {{ a.title }}     分类 : {{ a.doctype }}
-		</div>
+		<div class="panel-heading">文档名 : {{ a.title }}</div>
 		<div class="panel-body">
-			<p>描述</p>
+			<p>分类 : {{ a.doctype }}</p>
+			<p>描述 :</p>
 			<p>{{ a.description|truncatechars:250}}</p>
 		</div>
 		<div class="panel-body">
