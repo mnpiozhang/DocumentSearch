@@ -16,6 +16,7 @@ import datetime
 from django.db.models import Q
 from tasks import analyze_uploadfile_task
 from indexhelper import del_es_doc
+import os
 # Create your views here.
 
 #登陆
@@ -258,7 +259,15 @@ def edit(request,id):
     #print DocumentInfoObj.type
     if request.method == 'POST':
         DocumentInfoObj_form = DocumentForm(data=request.POST,files=request.FILES,instance=DocumentInfoObj)
-        fileSuffixObj = filenameJudge(request.FILES['attachment'].name)
+        #print request.POST
+        #print request.FILES['attachment'].name
+        #print DocumentInfoObj.attachment
+        #print str(DocumentInfoObj.attachment)
+        #print DocumentInfoObj_form.attachment
+        try:
+            fileSuffixObj = filenameJudge(request.FILES['attachment'].name)
+        except:
+            fileSuffixObj = filenameJudge(os.path.basename(str(DocumentInfoObj.attachment)))
         file_flag = fileSuffixObj.suffix_judge()
         if DocumentInfoObj_form.is_valid() and file_flag:
             DocumentObj = DocumentInfoObj_form.save(commit=False)
