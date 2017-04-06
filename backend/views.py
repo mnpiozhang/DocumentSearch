@@ -128,7 +128,7 @@ def submit_doc(request):
         file_flag = fileSuffixObj.suffix_judge()
         if DocumentObj_form.is_valid() and file_flag:
             DocumentObj = DocumentObj_form.save(commit=False)
-            #索引状态放置为s即开始所以
+            #索引状态放置为b即开始索引
             DocumentObj.indexstate = 'b'
             DocumentObj.save()
             analyze_uploadfile_task.delay(DocumentObj.id,file_flag)
@@ -258,8 +258,14 @@ def edit(request,id):
     #print DocumentInfoObj.type
     if request.method == 'POST':
         DocumentInfoObj_form = DocumentForm(data=request.POST,files=request.FILES,instance=DocumentInfoObj)
-        if DocumentInfoObj_form.is_valid():
-            DocumentInfoObj_form.save()
+        fileSuffixObj = filenameJudge(request.FILES['attachment'].name)
+        file_flag = fileSuffixObj.suffix_judge()
+        if DocumentInfoObj_form.is_valid() and file_flag:
+            DocumentObj = DocumentInfoObj_form.save(commit=False)
+            #索引状态放置为b即开始索引
+            DocumentObj.indexstate = 'b'
+            DocumentObj.save()
+            analyze_uploadfile_task.delay(DocumentObj.id,file_flag)
             ret['status'] = '修改成功'
         else:
             ret['status'] = '修改失败'
