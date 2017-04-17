@@ -12,6 +12,7 @@
 * 支持使用docker-compose快速编排部署。docker-compose up 直接使用即可， 就可以把celery redis elasticsearch等等应用快速构建。如用docker-compose起则应用端口为8001
 * 如果不是用docker-compose启动，要修改setting.py中的配置 ES_URL CELERY_BROKER_URL CELERY_RESULT_BACKEND，将其配置为真实的地址
 * 默认开启DEBUG=true，这样方便调试，不过这样会导致celery有内存泄漏，真想用就把DEBUG=false，并且前端加上nginx和gunicorn。
+* 支持指定字段搜索，例如指定文档类型doctype:test 指定文档名称docname:测试
 * 最后随时可能弃坑 = =
 
 上传的流程

@@ -3,6 +3,7 @@
 from django.shortcuts import render,render_to_response,redirect
 from django.template.context import RequestContext
 from backend.indexhelper import search_result
+import json
 
 def search(request):
     ret = {'Search':None,'Hit':0,'Doc':None}
@@ -27,7 +28,10 @@ def search(request):
                 tmpdict['doctype'] = i['_source']['doctype']
                 DocLst.append(tmpdict)
                 hitcount = hitcount +1
-            ret = {'Search':search,'Hit':hitcount,'Doc':DocLst}
+            DocJson = json.dumps({"data":DocLst})
+            print DocJson
+            print DocLst
+            ret = {'Search':search,'Hit':hitcount,'Doc':DocLst,'DocJson':DocJson}
         return render_to_response('search.html',ret,context_instance=RequestContext(request))
     else:
         return render_to_response('search.html',ret,context_instance=RequestContext(request))
