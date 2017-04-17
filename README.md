@@ -19,3 +19,9 @@
 ===========
 
 ![index](https://github.com/mnpiozhang/DocumentSearch/blob/master/example/uploadandindex.jpg)
+
+大概的样子
+===========
+
+![index](https://github.com/mnpiozhang/DocumentSearch/blob/master/example/searchex.jpg)
+![index](https://github.com/mnpiozhang/DocumentSearch/blob/master/example/index.jpg)
