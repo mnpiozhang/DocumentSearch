@@ -4,7 +4,8 @@ RUN apt-get update && apt-get install -y \
 		gcc \
 		gettext \
 		mysql-client libmysqlclient-dev \
-		postgresql-client libpq-dev \
+		#maybe occur error
+		#postgresql-client libpq-dev \
 		sqlite3 \
 	--no-install-recommends && rm -rf /var/lib/apt/lists/*
 
