@@ -5,28 +5,45 @@
 <nav class="breadcrumb">首页 <span class="c-gray en">&gt;</span>文档资讯列表 </nav>
 <div>
 
-	<form action='/backend/index/' method='GET'>
-		<input type="hidden" name="issearch" value=1>
-		<span class="select-box inline">
-		<select name="searchindexstate" class="select">
-			<option value="" >索引状态</option>
-			<option value="s" {% ifequal Qset.indexstate "s" %}selected = "selected"{% endifequal %} >索引成功</option>
-			<option value="i" {% ifequal Qset.indexstate "i" %}selected = "selected"{% endifequal %} >索引中</option>
-			<option value="f" {% ifequal Qset.indexstate "f" %}selected = "selected"{% endifequal %} >索引失败</option>
-			<option value="b" {% ifequal Qset.indexstate "b" %}selected = "selected"{% endifequal %} >开始索引</option>
-		</select>
-		</span>
-		<div>
-		<label>根据创建时间搜索--开始:</label>
-		<input type="text" name="searchstarttime" id="" placeholder="开始时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.searchstarttime }}">
-		<label>根据创建时间搜索--结束:</label>
-		<input type="text" name="searchendtime" id="" placeholder="结束时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.searchendtime }}">
+	<form class="form-horizontal" action='/backend/index/' method='GET'>
+	<fieldset>
+		<div class="form-group">
+			<input type="hidden" name="issearch" value=1>
+				<div class="col-sm-10">
+					<span class="select-box inline">
+					<select class="form-control" name="searchindexstate" class="select">
+						<option value="" >索引状态</option>
+						<option value="s" {% ifequal Qset.indexstate "s" %}selected = "selected"{% endifequal %} >索引成功</option>
+						<option value="i" {% ifequal Qset.indexstate "i" %}selected = "selected"{% endifequal %} >索引中</option>
+						<option value="f" {% ifequal Qset.indexstate "f" %}selected = "selected"{% endifequal %} >索引失败</option>
+						<option value="b" {% ifequal Qset.indexstate "b" %}selected = "selected"{% endifequal %} >开始索引</option>
+					</select>
+					</span>
+				</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-10">
+				<label>根据创建时间搜索--开始:</label>
+				<input type="text" name="searchstarttime" id="" placeholder="开始时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.searchstarttime }}">
+			</div>
+		</div>
+		<div class="form-group">
+			<div class="col-sm-10">
+				<label>根据创建时间搜索--结束:</label>
+				<input type="text" name="searchendtime" id="" placeholder="结束时间" style="width:80px" class="vDateField" size="10" value="{{ Qset.searchendtime }}">
+			</div>
 		<button class="btn btn-success" type="submit">搜索</button>
 		</div>
+		
+	</fieldset>
 	</form>
 
+
+
+<div>
+
 	<form action='/backend/batchdel/' method='POST'>{% csrf_token %}
-	<div><span><button type="button" class="btn btn-danger radius" data-toggle="modal" data-target="#myBatchDel">批量删除</button></span> <span>共有数据：<strong>{{ AllCount }}</strong> 条</span> </div>
+	<div><span><button type="button" class="btn-xs btn-danger radius" data-toggle="modal" data-target="#myBatchDel">批量删除</button></span> <span>共有数据：<strong>{{ AllCount }}</strong> 条</span> </div>
 	<!-- 批量删除的模态框（Modal） -->
 	<div class="modal fade" id="myBatchDel" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -129,8 +146,9 @@
 	</div>
 	</form>
 </div>
+</div>
 
-<div class="pagediv"></ul class="pure-paginator">{{ PageInfo }}</ul></div>
+<div style="margin: 0 auto;text-align: center;padding-top: 2em;padding-bottom: 2em;"></ul class="pure-paginator">{{ PageInfo }}</ul></div>
 
 {% if popover %}
 <div id="myPopover" class="alert alert-warning">
